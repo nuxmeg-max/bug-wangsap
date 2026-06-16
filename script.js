@@ -22,7 +22,7 @@ setInterval(() => {
 let isBugMode = false;
 
 function getDashboardAudio() {
-  return document.getElementById('send-sound');
+  return document.getElementById('dashboard-sound');
 }
 
 function playDashboardSound() {
