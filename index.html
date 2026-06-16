@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WA Bug Tool — MEG</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- POPUP JOIN KOMUNITAS -->
+  <div class="popup-overlay" id="popup">
+    <div class="popup-sheet">
+      <div class="popup-tag">SELAMAT DATANG</div>
+      <h2 class="popup-title">JOIN KOMUNITAS</h2>
+      <p class="popup-desc">Gabung & follow biar nggak ketinggalan update tools terbaru.</p>
+
+      <div class="popup-links">
+        <a href="#" class="popup-link-item">
+          <div class="popup-link-icon wa-green">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div class="popup-link-text">
+            <span class="link-title">Channel WhatsApp</span>
+            <span class="link-sub">Follow channel untuk update terbaru</span>
+          </div>
+          <i class="fa-solid fa-chevron-right popup-link-arrow"></i>
+        </a>
+
+        <a href="#" class="popup-link-item">
+          <div class="popup-link-icon wa-green">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div class="popup-link-text">
+            <span class="link-title">Grup WhatsApp</span>
+            <span class="link-sub">Join grup & diskusi bareng</span>
+          </div>
+          <i class="fa-solid fa-chevron-right popup-link-arrow"></i>
+        </a>
+      </div>
+
+      <button class="btn-skip" onclick="closePopup()">Lewati</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <!-- BANNER VIDEO -->
+    <div class="video-banner">
+      <video id="banner-video" autoplay muted loop playsinline>
+        <!-- <source src="banner.mp4" type="video/mp4"> -->
+      </video>
+      <div class="banner-bg-fallback"></div>
+      <div class="banner-overlay"></div>
+      <div class="banner-scanlines"></div>
+      <div class="banner-content">
+        <div class="banner-badge">
+          <i class="fa-solid fa-circle-dot"></i> TOOL ONLINE — V2.4.1
+        </div>
+        <h1 class="banner-title"><span class="txt-neon">WA</span> BUG TOOL</h1>
+        <p class="banner-sub">Advanced &middot; Undetected &middot; Instant Deploy</p>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <section class="cards-section">
+      <div class="cards-grid">
+
+        <div class="stat-card card-green">
+          <div class="card-top">
+            <span class="card-label">Server Status</span>
+            <i class="fa-solid fa-server card-icon"></i>
+          </div>
+          <div class="card-value">ONLINE</div>
+          <div class="card-sub">
+            <span class="dot-pulse"></span> All systems go
+          </div>
+        </div>
+
+        <div class="stat-card card-cyan">
+          <div class="card-top">
+            <span class="card-label">Active Users</span>
+            <i class="fa-solid fa-users card-icon"></i>
+          </div>
+          <div class="card-value" id="user-count">2,847</div>
+          <div class="card-sub">This session</div>
+        </div>
+
+        <div class="stat-card card-blue">
+          <div class="card-top">
+            <span class="card-label">Runtime</span>
+            <i class="fa-solid fa-clock card-icon"></i>
+          </div>
+          <div class="card-value mono" id="runtime">00:00:00</div>
+          <div class="card-sub">Session uptime</div>
+        </div>
+
+        <div class="stat-card card-pink">
+          <div class="card-top">
+            <span class="card-label">Your Battery</span>
+            <i class="fa-solid fa-battery-three-quarters card-icon" id="bat-icon"></i>
+          </div>
+          <div class="card-value" id="battery-val">--</div>
+          <div class="battery-bar">
+            <div class="battery-fill" id="battery-fill"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TOOL FORM -->
+    <section class="tool-section">
+      <div class="tool-card">
+
+        <div class="tool-header">
+          <span class="tool-tag">// TARGET MODULE</span>
+          <h2 class="tool-title">Kirim Bug ke Target</h2>
+        </div>
+
+        <!-- INPUT NOMOR -->
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fa-solid fa-mobile-screen-button"></i> Nomor Target
+          </label>
+          <div class="phone-wrap">
+            <div class="phone-prefix">
+              <i class="fa-solid fa-flag"></i> +62
+            </div>
+            <input
+              type="tel"
+              id="phone-input"
+              class="form-input"
+              placeholder="81234567890"
+              maxlength="13"
+            >
+          </div>
+        </div>
+
+        <!-- PILIH JENIS BUG -->
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fa-solid fa-bug"></i> Jenis Bug
+          </label>
+          <div class="bug-grid" id="bug-grid">
+
+            <div class="bug-option selected" data-bug="App Crash">
+              <i class="fa-solid fa-bomb bug-ico"></i>
+              <span class="bug-name">App Crash</span>
+              <span class="bug-desc">Force close WA target</span>
+            </div>
+
+            <div class="bug-option" data-bug="Freeze Loop">
+              <i class="fa-solid fa-snowflake bug-ico"></i>
+              <span class="bug-name">Freeze Loop</span>
+              <span class="bug-desc">Membeku tidak respon</span>
+            </div>
+
+            <div class="bug-option" data-bug="Notif Flood">
+              <i class="fa-solid fa-envelope-open-text bug-ico"></i>
+              <span class="bug-name">Notif Flood</span>
+              <span class="bug-desc">Spam notifikasi massal</span>
+            </div>
+
+            <div class="bug-option" data-bug="Ghost Mode">
+              <i class="fa-solid fa-ghost bug-ico"></i>
+              <span class="bug-name">Ghost Mode</span>
+              <span class="bug-desc">Pesan invisible loop</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SEND BUTTON -->
+        <button class="btn-send" id="send-btn" onclick="sendBug()">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>SEND BUG</span>
+        </button>
+
+        <!-- PROGRESS -->
+        <div class="progress-wrap" id="progress-wrap">
+          <div class="progress-meta">
+            <span id="progress-text">Initializing...</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <div class="progress-log" id="progress-log"></div>
+        </div>
+
+        <!-- RESULT -->
+        <div class="result-box" id="result-box">
+          <i class="fa-solid fa-circle-check result-icon"></i>
+          <div class="result-title">BUG BERHASIL DIKIRIM</div>
+          <div class="result-msg" id="result-msg"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <i class="fa-solid fa-shield-halved"></i>
+      Made by <span>MEG Tools</span> &mdash; For Educational &amp; Prank Purpose Only
+    </footer>
+
+  </div>
+
+  <audio id="send-sound">
+    <source src="sounds/send.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
