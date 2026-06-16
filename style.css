@@ -42,6 +42,19 @@ body {
 a { text-decoration: none; }
 
 /* ═══════════════════════════════════════════
+   POPUP BLUR
+═══════════════════════════════════════════ */
+.main-content {
+  transition: filter .3s ease;
+}
+
+body.popup-open .main-content {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════════
    POPUP JOIN KOMUNITAS
 ═══════════════════════════════════════════ */
 .popup-overlay {
@@ -250,7 +263,10 @@ a { text-decoration: none; }
   text-shadow: var(--glow-neon);
 }
 
-.banner-badge i { font-size: 0.55rem; animation: blink 1.2s step-end infinite; }
+.banner-badge i {
+  font-size: 0.55rem;
+  animation: blink 1.2s step-end infinite;
+}
 
 .banner-title {
   font-family: 'Orbitron', sans-serif;
@@ -345,10 +361,10 @@ a { text-decoration: none; }
   margin-bottom: 6px;
 }
 
-.card-green .card-value  { color: var(--neon); text-shadow: var(--glow-neon); }
-.card-cyan  .card-value  { color: var(--cyan); text-shadow: var(--glow-cyan); }
-.card-blue  .card-value  { color: #a78bfa; }
-.card-pink  .card-value  { color: var(--pink); text-shadow: var(--glow-pink); }
+.card-green .card-value { color: var(--neon); text-shadow: var(--glow-neon); }
+.card-cyan  .card-value { color: var(--cyan); text-shadow: var(--glow-cyan); }
+.card-blue  .card-value { color: #a78bfa; }
+.card-pink  .card-value { color: var(--pink); text-shadow: var(--glow-pink); }
 
 .card-sub {
   font-size: 0.7rem;
@@ -358,9 +374,11 @@ a { text-decoration: none; }
   gap: 6px;
 }
 
-.mono { font-family: 'Orbitron', monospace; font-size: 1.1rem !important; }
+.mono {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem !important;
+}
 
-/* battery bar */
 .battery-bar {
   height: 3px;
   background: rgba(255,255,255,0.06);
@@ -377,9 +395,9 @@ a { text-decoration: none; }
   box-shadow: 0 0 8px var(--pink);
 }
 
-/* dot pulse */
 .dot-pulse {
-  width: 6px; height: 6px;
+  width: 6px;
+  height: 6px;
   background: var(--neon);
   border-radius: 50%;
   display: inline-block;
@@ -448,7 +466,10 @@ a { text-decoration: none; }
   margin-bottom: 10px;
 }
 
-.form-label i { color: var(--neon); font-size: 0.75rem; }
+.form-label i {
+  color: var(--neon);
+  font-size: 0.75rem;
+}
 
 .phone-wrap {
   display: flex;
@@ -533,7 +554,10 @@ a { text-decoration: none; }
   transition: color .2s;
 }
 
-.bug-option.selected .bug-ico { color: var(--neon); text-shadow: var(--glow-neon); }
+.bug-option.selected .bug-ico {
+  color: var(--neon);
+  text-shadow: var(--glow-neon);
+}
 
 .bug-name {
   font-size: 0.8rem;
@@ -660,7 +684,10 @@ a { text-decoration: none; }
   text-align: center;
 }
 
-.result-box.show { display: block; animation: fadeIn .4s ease; }
+.result-box.show {
+  display: block;
+  animation: fadeIn .4s ease;
+}
 
 .result-icon {
   font-size: 2rem;
@@ -707,8 +734,13 @@ footer span { color: var(--text); font-weight: 600; }
 /* ═══════════════════════════════════════════
    ANIMATIONS
 ═══════════════════════════════════════════ */
-@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
-@keyframes fadeOut { to   { opacity: 0; pointer-events: none; } }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fadeOut {
+  to { opacity: 0; pointer-events: none; }
+}
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(40px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -730,4 +762,4 @@ footer span { color: var(--text); font-weight: 600; }
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
+              }
