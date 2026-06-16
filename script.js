@@ -1,26 +1,65 @@
 /* ═══════════════════════════════════════════
+   RUNTIME — persist pakai localStorage
+═══════════════════════════════════════════ */
+const RUNTIME_KEY = 'wa_bug_runtime_start';
+
+if (!localStorage.getItem(RUNTIME_KEY)) {
+  localStorage.setItem(RUNTIME_KEY, Date.now());
+}
+
+setInterval(() => {
+  const start   = parseInt(localStorage.getItem(RUNTIME_KEY));
+  const elapsed = Math.floor((Date.now() - start) / 1000);
+  const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+  const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+  const s = String(elapsed % 60).padStart(2, '0');
+  document.getElementById('runtime').textContent = `${h}:${m}:${s}`;
+}, 1000);
+
+/* ═══════════════════════════════════════════
+   AUDIO STATE
+═══════════════════════════════════════════ */
+let isBugMode = false;
+
+function getDashboardAudio() {
+  return document.getElementById('send-sound');
+}
+
+function playDashboardSound() {
+  if (isBugMode) return;
+  const audio = getDashboardAudio();
+  if (audio) {
+    audio.currentTime = 0;
+    audio.volume = 1;
+    audio.play().catch(() => {});
+  }
+}
+
+function muteDashboardSound() {
+  const audio = getDashboardAudio();
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+}
+
+/* ═══════════════════════════════════════════
    POPUP
 ═══════════════════════════════════════════ */
 function closePopup() {
   const overlay = document.getElementById('popup');
   overlay.style.animation = 'fadeOut .3s ease forwards';
+  document.body.classList.remove('popup-open');
   setTimeout(() => overlay.remove(), 300);
+  playDashboardSound();
 }
 
-/* ═══════════════════════════════════════════
-   RUNTIME COUNTER
-═══════════════════════════════════════════ */
-let seconds = 0;
-setInterval(() => {
-  seconds++;
-  const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-  const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-  const s = String(seconds % 60).padStart(2, '0');
-  document.getElementById('runtime').textContent = `${h}:${m}:${s}`;
-}, 1000);
+document.getElementById('popup').addEventListener('click', function (e) {
+  if (e.target === this) closePopup();
+});
 
 /* ═══════════════════════════════════════════
-   USER COUNT (RANDOM DRIFT)
+   USER COUNT
 ═══════════════════════════════════════════ */
 let baseCount = 2847;
 setInterval(() => {
@@ -41,9 +80,7 @@ async function initBattery() {
     const pct = Math.round(level * 100);
     valEl.textContent  = pct + '%';
     fillEl.style.width = pct + '%';
-
-    // change icon based on level
-    iconEl.className = 'fa-solid card-icon ' + (
+    iconEl.className   = 'fa-solid card-icon ' + (
       pct > 75 ? 'fa-battery-full' :
       pct > 50 ? 'fa-battery-three-quarters' :
       pct > 25 ? 'fa-battery-half' :
@@ -56,9 +93,7 @@ async function initBattery() {
     render(bat.level);
     bat.addEventListener('levelchange', () => render(bat.level));
   } catch {
-    // fallback: random 55–90%
-    const pct = (55 + Math.floor(Math.random() * 36)) / 100;
-    render(pct);
+    render((55 + Math.floor(Math.random() * 36)) / 100);
   }
 }
 
@@ -75,11 +110,11 @@ document.querySelectorAll('.bug-option').forEach(el => {
 });
 
 /* ═══════════════════════════════════════════
-   AUDIO
+   BEEP SOUNDS (Web Audio API)
 ═══════════════════════════════════════════ */
 function playBeep() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx   = new (window.AudioContext || window.webkitAudioContext)();
     const tones = [880, 660, 1100, 440, 880];
     tones.forEach((freq, i) => {
       const osc  = ctx.createOscillator();
@@ -96,12 +131,6 @@ function playBeep() {
       osc.stop(t + 0.12);
     });
   } catch (_) {}
-
-  const audio = document.getElementById('send-sound');
-  if (audio) {
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-  }
 }
 
 function playSuccess() {
@@ -123,7 +152,7 @@ function playSuccess() {
 }
 
 /* ═══════════════════════════════════════════
-   PROGRESS LOG MESSAGES
+   PROGRESS MESSAGES
 ═══════════════════════════════════════════ */
 const LOG_MSGS = [
   '> connecting to exploit server...',
@@ -140,25 +169,24 @@ const LOG_MSGS = [
    SEND BUG
 ═══════════════════════════════════════════ */
 function sendBug() {
-  const phoneEl   = document.getElementById('phone-input');
+  const phoneEl    = document.getElementById('phone-input');
   const selectedEl = document.querySelector('.bug-option.selected');
-  const btn       = document.getElementById('send-btn');
-  const progWrap  = document.getElementById('progress-wrap');
-  const progFill  = document.getElementById('progress-fill');
-  const progText  = document.getElementById('progress-text');
-  const progPct   = document.getElementById('progress-pct');
-  const progLog   = document.getElementById('progress-log');
-  const resultBox = document.getElementById('result-box');
-  const resultMsg = document.getElementById('result-msg');
+  const btn        = document.getElementById('send-btn');
+  const progWrap   = document.getElementById('progress-wrap');
+  const progFill   = document.getElementById('progress-fill');
+  const progText   = document.getElementById('progress-text');
+  const progPct    = document.getElementById('progress-pct');
+  const progLog    = document.getElementById('progress-log');
+  const resultBox  = document.getElementById('result-box');
+  const resultMsg  = document.getElementById('result-msg');
 
   const phone = phoneEl.value.trim();
 
-  // Validation
   if (!phone || phone.length < 8) {
-    phoneEl.style.animation = 'shake .4s ease';
+    phoneEl.style.animation   = 'shake .4s ease';
     phoneEl.style.borderColor = 'rgba(255,77,158,0.5)';
     setTimeout(() => {
-      phoneEl.style.animation = '';
+      phoneEl.style.animation   = '';
       phoneEl.style.borderColor = '';
     }, 500);
     return;
@@ -168,13 +196,15 @@ function sendBug() {
     ? selectedEl.querySelector('.bug-name').textContent
     : 'App Crash';
 
-  // Play sound
+  // Mute dashboard sound, aktifkan bug mode
+  isBugMode = true;
+  muteDashboardSound();
   playBeep();
 
-  // Set loading UI
+  // UI loading
   btn.classList.add('loading');
   btn.innerHTML = '<i class="fa-solid fa-spinner" style="animation:spin 1s linear infinite"></i><span>PROCESSING...</span>';
-  btn.disabled = true;
+  btn.disabled  = true;
 
   resultBox.classList.remove('show');
   progWrap.classList.add('show');
@@ -182,8 +212,8 @@ function sendBug() {
   progPct.textContent  = '0%';
   progLog.textContent  = '';
 
-  let prog    = 0;
-  let msgIdx  = -1;
+  let prog   = 0;
+  let msgIdx = -1;
 
   const tick = setInterval(() => {
     prog += (Math.random() * 3.5) + 0.8;
@@ -212,13 +242,16 @@ function sendBug() {
   function finish() {
     progWrap.classList.remove('show');
     resultBox.classList.add('show');
-    resultMsg.textContent =
-      `Bug "${bugType}" berhasil dikirim ke nomor +62${phone}.`;
+    resultMsg.textContent = `Bug "${bugType}" berhasil dikirim ke nomor +62${phone}.`;
 
     btn.classList.remove('loading');
     btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i><span>KIRIM LAGI</span>';
     btn.disabled  = false;
 
     playSuccess();
+
+    setTimeout(() => {
+      isBugMode = false;
+    }, 800);
   }
 }
